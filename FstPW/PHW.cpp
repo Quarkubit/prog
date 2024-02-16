@@ -54,7 +54,7 @@ public:
     {
         if (image == 0 && real == 0)
         {
-            cout << "0";
+            cout << "0\n";
             return;
         }
         if (real != 0)
@@ -72,8 +72,10 @@ public:
         }
         if (image != 0)
         {
-            cout << abs(image) << "i" << endl;
+            cout << abs(image) << "i\n" << endl;
+            return;
         }
+        cout << '\n';
     }
 
     // Модуль комплексного числа
@@ -120,6 +122,30 @@ public:
         return res;
     }
 
+    Complex operator*(double z) // умножение комплексного на
+    {
+        Complex res;
+        res.real = real * z;
+        res.image = image * z;
+        return res;
+    }
+
+    Complex operator*(Complex z)
+    {
+        Complex res;
+        res.real = real * z.real - image * z.image;
+        res.image = real * z.image + image * z.real;
+        return res;
+    }
+
+    friend Complex operator*(double x,Complex z)
+    {
+        Complex res;
+        res.real = z.real * x;
+        res.image = z.image * x;
+        return res;
+    }
+
     bool operator==(Complex z) // равенство
     {
         return (real == z.real && image == z.image);
@@ -141,9 +167,14 @@ int main()
     H.setComplex(-3, 3).print();
     H.setComplex(-4, -4).print();
 
-    Complex z, x(2);
-    z.print();
+    Complex y, x(2);
+    y.print();
     x.print();
 
+    Complex A, z(1, 2);
+    A = z * 8;
+    A.print();
+    A = 8 * z;
+    A.print();
     return 0;
 }
