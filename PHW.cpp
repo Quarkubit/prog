@@ -50,26 +50,37 @@ public:
     }
 
     // Вывод числа в формате "x + y*i"
-    void print() const
+    void print()
     {
-        // !?!?!? уточнить на правктике
-        cout << ' ' << real; // в VS code не выводятся отрицательные числа, если перед этим не добавить любой другой символ
-        if (image >= 0)
+        if (image == 0 && real == 0)
+        {
+            cout << "0";
+            return;
+        }
+        if (real != 0)
+        {
+            // !?!?!? уточнить на правктике
+            cout << ' ' << real; // в VS code не выводятся отрицательные числа, если перед этим не добавить любой другой символ
+        }
+        if (image > 0)
         {
             cout << " + ";
         }
-        else
+        if (image < 0)
         {
             cout << " - ";
         }
-        cout << abs(image) << "i" << endl;
+        if (image != 0)
+        {
+            cout << abs(image) << "i" << endl;
+        }
     }
 
     // Модуль комплексного числа
-    double Module() { return sqrt(real * real + image * image); }    
+    double Module() { return sqrt(real * real + image * image); }
 
     // Операторы
-    Complex add(Complex z) //сложение методом 
+    Complex add(Complex z) // сложение методом
     {
         Complex res;
         res.real = real + z.real;
@@ -77,7 +88,7 @@ public:
         return res;
     }
 
-    Complex add(double value) 
+    Complex add(double value)
     {
         Complex res;
         res.real = real + value;
@@ -85,7 +96,7 @@ public:
         return res;
     }
 
-    Complex operator+(Complex z) //сложение знаком
+    Complex operator+(Complex z) // сложение знаком
     {
         Complex res;
         res.real = real + z.real;
@@ -110,16 +121,16 @@ public:
     }
 
     bool operator==(Complex z) // равенство
-	{
-		return (real == z.real && image == z.image);
-	}
+    {
+        return (real == z.real && image == z.image);
+    }
 
-	Complex operator=(Complex z)  // присваивание
-	{
-		real = z.real;
-		image = z.image;
-		return *this;
-	}
+    Complex operator=(Complex z) // присваивание
+    {
+        real = z.real;
+        image = z.image;
+        return *this;
+    }
 };
 
 int main()
