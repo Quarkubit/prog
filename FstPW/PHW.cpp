@@ -161,17 +161,17 @@ public:
 
 int main()
 {
-    Complex H;
+    Complex H;    // test1
     H.setComplex(1, 1).print();
     H.setComplex(2, -2).print();
     H.setComplex(-3, 3).print();
     H.setComplex(-4, -4).print();
 
-    Complex y, x(2);
+    Complex y, x(2);    // test2
     y.print();
     x.print();
 
-    Complex A, z(1, 2);
+    Complex A, z(1, 2);    // test3
     A = z * 8;
     A.print();
     A = 8 * z;
