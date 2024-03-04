@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 using namespace std;
 class Fraction
 {
@@ -65,9 +66,22 @@ public:
     // Алгоритм Евклида
     int gcd(int a, int b)
     {
-        if (b == 0)
-            return a;
-        return gcd(b, a % b);
+        while (a!=b)
+        {
+            if (a > b) 
+                a -= b;
+            else
+                b -= a;
+        }
+        return b;
+    }
+
+    Fraction reduction()
+    {
+        int nod=gcd(numerator,denominator);
+        numerator/=nod;
+        denominator/=nod;
+        return *this;
     }
 
     // бинарные +, -, <, >
@@ -125,12 +139,11 @@ int main()
     J.print();
     Fraction D = 2 * K;
     D.print();
-    cout << "\nF*G = ";
+    // cout << "\nF*G = ";
     H.print();
-    cout << "\nF==F " << (F == F);
-    cout << "\nF!=F " << (F != F);
-    cout << "\n-F = ";
-    (-F).print();
-
+    // cout << "\nF==F " << (F == F);
+    // cout << "\nF!=F " << (F != F);
+    cout << "\n-F = "; (-F).print();
+    system("pause");
     return 0;
 }
