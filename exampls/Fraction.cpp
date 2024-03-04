@@ -139,10 +139,10 @@ int main()
     J.print();
     Fraction D = 2 * K;
     D.print();
-    // cout << "\nF*G = ";
+    cout << "\nF*G = ";
     H.print();
-    // cout << "\nF==F " << (F == F);
-    // cout << "\nF!=F " << (F != F);
+    cout << "\nF==F " << (F == F);
+    cout << "\nF!=F " << (F != F);
     cout << "\n-F = "; (-F).print();
     system("pause");
     return 0;

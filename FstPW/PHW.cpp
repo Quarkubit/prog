@@ -10,22 +10,12 @@ private:
     double real, image;
 
 public:
-    // Конструкторы
-    /*Complex()
-    {
-        real = 0;
-        image = 0;
-    }*/
+    // Конструктор
     Complex(double r = 0, double im = 0)
     {
         real = r;
         image = im;
     }
-    /*Complex(double r)
-    {
-        real = r;
-        image = 0;
-    }*/
 
     // Получатели
     double getReal() { return real; }
@@ -79,10 +69,10 @@ public:
     }
 
     // Модуль комплексного числа
-    double Module() { return sqrt(real * real + image * image); }
+    // double Module() { return sqrt(real * real + image * image); }
 
     // Операторы
-    Complex add(Complex z) // сложение методом
+    /*Complex add(Complex z) // сложение методом
     {
         Complex res;
         res.real = real + z.real;
@@ -96,7 +86,7 @@ public:
         res.real = real + value;
         res.image = image;
         return res;
-    }
+    }*/
 
     Complex operator+(Complex z) // сложение знаком
     {
@@ -122,7 +112,7 @@ public:
         return res;
     }
 
-    Complex operator*(double z) // умножение комплексного на
+    Complex operator*(double z) // умножение комплексного на действительное
     {
         Complex res;
         res.real = real * z;
@@ -130,7 +120,7 @@ public:
         return res;
     }
 
-    Complex operator*(Complex z)
+    Complex operator*(Complex z) // умножение комплексного на комплексное
     {
         Complex res;
         res.real = real * z.real - image * z.image;
@@ -138,15 +128,10 @@ public:
         return res;
     }
 
-    friend Complex operator*(double x,Complex z)
-    {
-        Complex res;
-        res.real = z.real * x;
-        res.image = z.image * x;
-        return res;
-    }
+    friend Complex operator*(double x, Complex z); // умножение действительного на комплексное
+    
 
-    bool operator==(Complex z) // равенство
+    /*bool operator==(Complex z) // равенство
     {
         return (real == z.real && image == z.image);
     }
@@ -156,25 +141,39 @@ public:
         real = z.real;
         image = z.image;
         return *this;
-    }
+    }*/
 };
+
+Complex operator*(double x, Complex z)
+{
+    Complex res;
+    res.real = z.real * x;
+    res.image = z.image * x;
+    return res;
+}
 
 int main()
 {
-    Complex H;    // test1
+    Complex H;    // конструктор тест
     H.setComplex(1, 1).print();
     H.setComplex(2, -2).print();
     H.setComplex(-3, 3).print();
     H.setComplex(-4, -4).print();
 
-    Complex y, x(2);    // test2
+    Complex y, x(2,1);    // вывод тест
     y.print();
     x.print();
 
-    Complex A, z(1, 2);    // test3
-    A = z * 8;
+    Complex A, z(1, 2);    // умножение тест
+    A = z * 8; // комплексное на действительно
     A.print();
-    A = 8 * z;
+    A = z * x; // комплексное на комплексное
+    A.print();
+    A = 8 * z; // действительно на комплексное
+    A.print();
+
+    A.setComplex(1,1).print();   // унарный плюс тест
+    A=+(A);
     A.print();
     return 0;
 }
