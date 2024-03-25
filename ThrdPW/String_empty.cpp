@@ -117,10 +117,31 @@ public:
 		}
 		return -1;
 	}
+	virtual bool isPalindrome()
+	{
+		cout<<"\n Version of Palindrome from Base";
+
+		char* p1 = p; char* p2 = &p[len-1];
+		while(p1<p2)
+		{
+			//cout<<"\nComparison: "<<p1<<" "<<p2;
+			if (*p1++ !=*p2++)
+			return false;
+		}
+		return true;
+	}
+
+	// virtual void test()=0; //чвф
 };
 
 class String : public BaseString
 {
+private:
+	char tolower(char c)
+	{
+		return (c>='A' && c<='Z'?'a'+c-'A':c);
+
+	}
 public:
 	String(char *ptr) : BaseString(ptr) {}
 	String(const char *ptr) : BaseString(ptr) {}
@@ -137,24 +158,47 @@ public:
 		}
 		return -1;
 	}
+
+	bool isPalindrome()
+	{
+		cout<<"\n Version of Palindrome from Derived";
+
+		char* p1 = p; char* p2 = &p[len-1];
+		while(p1<p2)
+		{
+			//cout<<"\nComparison: "<<p1<<" "<<p2;
+			if (tolower(*p1++) != tolower(*p2++))
+			return false;
+		}
+		return true;
+	}
+
+	void test() {cout<<"\ntest: "<<isPalindrome();}
 };
 
 void f(BaseString *ptr)
 {
-	int index = ptr->IndexOf('t');
-	cout <<'\n'<<index<<'\n';
-	// ptr->test();
+	bool b = ptr->isPalindrome();
+	int f = ptr->IndexOf('t');
+	cout<<"\n"<<b<<" "<<f;
 }
 
 int main()
 {
 	if (true)
 	{
-		String s("test");
-		s.print();
-		cout << s.IndexOf('t') << endl;
-		String s1 = s;
-		s1.print();
+		String s("topot");
+		// s.print();
+		BaseString b("test");
+		BaseString *ptr = &b;
+		f(ptr);
+
+		ptr = &s;
+		// cout << "\nPalindrome: " << ptr->isPalindrome();
+		// ptr = &b;
+		f(ptr);
+		// cout << "\nPalindrome " << ptr->isPalindrome();
+		/*s1.print();
 		BaseString s2; s2 = s1;
 		s2.print();
 		/*s2 = s + s1;
