@@ -1,17 +1,12 @@
-// Inheritance_Array.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 using namespace std;
 
 class MyArrayParent
 {
 protected:
-    // сколько памяти выделено?
     int capacity;
-    // количество элементов - сколько памяти используем
     int count;
     // массив
     double *ptr;
@@ -30,14 +25,22 @@ public:
     MyArrayParent(double *arr, int len)
     {
         cout << "\nMyArrayParent constructor";
+        ptr = arr;
+        count = len;
+        capacity = len;
         // заполнить массив ptr, заполнить поля
     }
     // деструктор
     ~MyArrayParent()
     {
         cout << "\nMyArrayParent destructor";
+        if (ptr == NULL)
+        {
+            return;
+        }
         // освободить память, выделенную под ptr
         delete[] ptr;
+        ptr = NULL;
     }
 
     // обращение к полям
@@ -47,13 +50,20 @@ public:
     {
         if (index >= 0 && index < count)
             return ptr[index];
-        // сгенерировать исключение, если индекс неправильный
+        else
+        {
+            cout << "Incorrect Index";
+        }
         return -1;
     }
     void SetComponent(int index, double value)
     {
         if (index >= 0 && index < count)
             ptr[index] = value;
+        else
+        {
+            cout << "Incorrect Index";
+        }
         // сгенерировать исключение, если индекс неправильный
     }
 
@@ -71,10 +81,9 @@ public:
     {
         if (count > 0)
         {
-            // ptr[count-1] = 0;
             count--;
         }
-        // что делаем, если пуст?
+        return;
     }
 
     double &operator[](int index)
@@ -101,7 +110,8 @@ public:
 
     MyArrayParent(const MyArrayParent &V)
     {
-        // создание копии объекта - в основном, при возвращении результата из функции / передаче параметров в функцию
+        // создание копии объекта - в основном, при возвращении результата из функции
+        /// передаче параметров в функцию
         ptr = new double[V.capacity];
         capacity = V.capacity;
         count = V.count;
@@ -122,20 +132,29 @@ public:
         }
         cout << "}";
     }
-};
 
-void f(MyArrayParent p)
-{
-    cout << "\nIn f(): ";
-    p.print();
-}
+    // поиск элемента
+    int IndexOf(double value)
+    {
+        for (int i = 0; i < count; i++)
+            if (fabs(ptr[i] - value) < 0.001)
+                return i;
+        return -1;
+    }
+};
 
 class MyArrayChild : public MyArrayParent
 {
 public:
     // используем конструктор родителя. Нужно ли что-то ещё?
-    MyArrayChild(int Dimension = 100) : MyArrayParent(Dimension) { cout << "\nMyArrayChild constructor"; }
-
+    MyArrayChild(int Dimension = 100) : MyArrayParent(Dimension)
+    {
+        cout << "\nMyArrayChild constructor";
+    }
+    MyArrayChild(double *arr, int len) : MyArrayParent(arr, len)
+    {
+        cout << "\nArrChild constructor's working";
+    }
     ~MyArrayChild() { cout << "\nMyArrayChild destructor\n"; }
 
     // удаление элемента
@@ -143,22 +162,14 @@ public:
     {
         if (index == -1)
             RemoveLastValue();
-        if (index < 0 || index >= count)
+        else if (index < 0 || index >= count)
             return;
-
-        for (int i = index + 1; i < count; i++)
-            ptr[i - 1] = ptr[i];
-        count--;
-    }
-
-    // поиск элемента
-
-    int IndexOf(double value, bool bFindFromStart = true)
-    {
-        for (int i = 0; i < count; i++)
-            if (fabs(ptr[i] - value) < 0.001)
-                return i;
-        return -1;
+        else
+        {
+            for (int i = index + 1; i < count; i++)
+                ptr[i - 1] = ptr[i];
+            count--;
+        }
     }
 
     // вставка элемента
@@ -178,11 +189,15 @@ public:
         ptr[index] = value;
     }
 
-    // выделение подпоследовательности
-    // MyArrayChild SubSequence(int StartIndex = 0, int Length = -1)
-
-    // добавление элемента в конец
-    // operator + ?
+    // получение всех индексов элемента
+    MyArrayChild AllIndexes(double value)
+    {
+        MyArrayChild resArr;
+        for (int i = 0; i < count; i++)
+            if (fabs(ptr[i] - value) < 0.001)
+                resArr.push(i);
+        return resArr;
+    }
 };
 
 class MySortedArray : public MyArrayChild
@@ -200,7 +215,8 @@ protected:
         if (ptr[middle] > value)
             return BinSearch(value, left, middle);
         if (ptr[middle] < value)
-            return BinSearch(value, middle, right);
+            return BinSearch(value, middle, right); // можно без if
+        return -1;
     }
 
     int BinSearch2(double value, int left, int right)
@@ -224,18 +240,22 @@ protected:
         if (ptr[middle] > value)
             return BinSearch2(value, left, middle);
         if (ptr[middle] < value)
-            return BinSearch2(value, middle, right); // можно без if
+            return BinSearch2(value, middle, right);
+        return -1;
     }
 
 public:
-    // используем конструктор родителя. Нужно ли что-то ещё?
-    MySortedArray(int Dimension = 100) : MyArrayChild(Dimension) { cout << "\nMySortedArray constructor"; }
+    MySortedArray(int Dimension = 100) : MyArrayChild(Dimension)
+    {
+        cout << "\nMySortedArray constructor";
+    }
+    MySortedArray(double *arr, int len) : MyArrayChild(arr, len)
+    {
+        cout << "\nMySortedArray constructor's working";
+    }
     ~MySortedArray() { cout << "\nMySortedArray destructor\n"; }
 
-    int IndexOf(double value, bool bFindFromStart = true)
-    {
-        return BinSearch(value, 0, count - 1);
-    }
+    int IndexOf(double value) { return BinSearch(value, 0, count - 1); }
 
     void push(double value)
     {
@@ -261,44 +281,47 @@ public:
         int index = BinSearch2(value, 0, count - 1);
         InsertAt(value, index);
     }
-};
+    MySortedArray AllIndexes(double value)
+    {
+        MySortedArray resArr;
+        int val = this->IndexOf(value);
+        if (val >= 0)
+        {
+            int i = val;
 
+            while ((i >= 0) && (fabs(ptr[i] - value) < 0.001))
+            {
+                resArr.push(i);
+                i--;
+            }
+            i = val+1;
+            while ((i < count) && (fabs(ptr[i] - value) < 0.001))
+            {
+                resArr.push(i);
+                i++;
+            }
+        }
+        return resArr;
+    }
+};
 int main()
 {
     MySortedArray arr1;
     if (true)
     {
         MySortedArray arr;
-        // MyArrayChild arr;
         int i = 0;
-        for (i = 0; i < 10; i++)
+        int count = 10;
+        for (i = 0; i < count; i++)
         {
-            arr.push((int)(100 * sin(i + 1)));
-            arr.print();
+            arr.push(abs(1 - i));
         }
-        // arr[4] = 1000;
-        // arr.RemoveAt(6);
         arr.print();
-        // arr.InsertAt(100, 3); f(arr); cout << "\nAfter f(): ";
-        arr.print();
-        arr1 = arr;
-        cout << "\nFind: " << arr.IndexOf(7) << "\n";
-        cout << "\nFind: " << arr.IndexOf(700) << "\n";
-        cout << "\nFind: " << arr.IndexOf(4.5) << "\n";
+        cout << "\nFind 1: " << arr.IndexOf(1) << "\n";
+        cout << "all indexes of 1 ";
+        arr.AllIndexes(1).print();
     }
-    arr1.print();
     char c;
-    cin >> c;
+    // cin >> c;
     return 0;
 }
-
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
