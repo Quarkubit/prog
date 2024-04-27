@@ -1,7 +1,8 @@
-// Matrices1.cpp: определяет точку входа для консольного приложения.
+// Matrices1.cpp: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 //
 
 #include <iostream>
+#include <fstream>
 #include <string.h>
 
 using namespace std;
@@ -9,7 +10,7 @@ using namespace std;
 /*class Exception: public exception
 {
 protected:
-//сообщение об ошибке
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 char* str;
 public:
 Exception(const char* s)
@@ -20,24 +21,24 @@ strcpy_s(str, strlen(s) + 1, s);
 Exception(const Exception& e)
 {
 str = new char[strlen(e.str) + 1];
-strcpy_s(str, strlen(e.str) + 1, e.str);         для VS      fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+strcpy_s(str, strlen(e.str) + 1, e.str);         пїЅпїЅпїЅ VS      fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 }
 ~Exception()
 {
 delete[] str;
 }
 
-//функцию вывода можно будет переопределить в производных классах, когда будет ясна конкретика
+//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 virtual void print()
 {
-cout << "Exception: " << str<< "; "«what();
+cout << "Exception: " << str<< "; "пїЅwhat();
 }
 };*/
 
 class Exception : public exception
 {
 protected:
-	// сообщение об ошибке
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	char *str;
 
 public:
@@ -56,7 +57,7 @@ public:
 		delete[] str;
 	}
 
-	// функцию вывода можно будет переопределить в производных классах, когда будет ясна конкретика
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	virtual void print()
 	{
 		cout << "Exception: " << str << "; " << what();
@@ -66,7 +67,7 @@ public:
 class WrongSizeException : public Exception
 {
 protected:
-	// сообщение об ошибке
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	int Row1, Col1, Row2, Col2;
 
 public:
@@ -87,7 +88,7 @@ public:
 class IndexOutOfBounceException : public Exception
 {
 protected:
-	// сообщение об ошибке
+	// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	int Row, Col;
 
 public:
@@ -113,7 +114,7 @@ protected:
 public:
 	BaseMatrix(int Height = 2, int Width = 2)
 	{
-		// конструктор
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		if (Height <= 0 || Width <= 0)
 			throw WrongSizeException("Attempt to create matrix of non-positive size", Height, Width, -1, -1);
 		height = Height;
@@ -125,7 +126,7 @@ public:
 
 	BaseMatrix(const BaseMatrix &M)
 	{
-		// конструктор копий
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		height = M.height;
 		width = M.width;
 		ptr = new double *[height];
@@ -141,7 +142,7 @@ public:
 
 	BaseMatrix operator=(const BaseMatrix &V)
 	{
-		// оператор присваивания
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		if (height != V.height & width != V.width)
 		{
 			if (ptr != NULL)
@@ -172,7 +173,7 @@ public:
 
 	~BaseMatrix()
 	{
-		// деструктор
+		// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		if (ptr != NULL)
 		{
 			for (int i = 0; i < height; i++)
@@ -184,7 +185,7 @@ public:
 
 	void print()
 	{
-		// вывод
+		// пїЅпїЅпїЅпїЅпїЅ
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
@@ -208,7 +209,7 @@ public:
 				result += ptr[i][i];
 		}
 		else
-			cout << "Не квадратная матрица\n";
+			cout << "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n";
 		return result;
 	}
 
@@ -222,23 +223,75 @@ public:
 				res(i, j) = ptr[i][j] + M(i, j);
 		return res;
 	}
+
+	friend ostream &operator<<(ostream &s, Matrix m);
+	friend istream &operator>>(istream &s, Matrix &m);
 };
+
+ostream &operator<<(ostream &s, Matrix m)
+{
+	if (typeid(s) == typeid(ofstream))
+	{
+		s << m.height << " " << m.width;
+		for (int i = 0; i < m.height; i++)
+			for (int j = 0; j < m.width; j++)
+				s << m.ptr[i][j] << " ";
+		return s;
+	}
+	for (int i = 0; i < m.height; i++)
+	{
+		for (int j = 0; j < m.width; j++)
+			s << m.ptr[i][j] << " ";
+		s << "\n";
+	}
+	return s;
+}
+
+istream &operator>>(istream &s, Matrix &m)
+{
+	if (typeid(s) == typeid(ofstream))
+	{
+		s >> m.height >> " " >> m.width;
+		for (int i = 0; i < m.height; i++)
+			for (int j = 0; j < m.width; j++)
+				s >> m[i][j];
+	}
+	for (int i = 0; i < m.height; i++)
+		for (int j = 0; j < m.width; j++)
+			s >> m.ptr[i][j];
+	return s;
+}
 
 int main()
 {
 	try
 	{
-		Matrix M/*(0, -1)*/;
-		M(0, 0) = 1;
+		Matrix M /*(0, -1)*/;
+		/*M(0, 0) = 1;
 		M(0, 1) = 2;
 		M(1, 0) = 3;
 		M(1, 1) = 4;
 		// M(1, 2) = 5;
-		
+
 		Matrix M1 = M;
 		Matrix M2 = M1 + M;
 		M2.print();
-		cout << "\nTr(M) = " << M2.Trace();
+		cout << "\nTr(M) = " << M2.Trace();*/
+		cin >> M;
+
+		ofstream fout("1.txt");
+		if (fout)
+		{
+			fout << M;
+			fout.close();
+		}
+		Matrix M1;
+		ifstream fin("1.txt");
+		if (fin)
+		{
+			fin >> M1;
+			fin.close();
+		}
 	}
 	catch (IndexOutOfBounceException ex)
 	{
@@ -249,6 +302,11 @@ int main()
 	{
 		cout << "\nWrongSizeException has been cought!!!\n";
 		ex.print();
+	}
+	catch (exception ex)
+	{
+		cout << "\nSmth has been cought\n";
+		ex.what();
 	}
 
 	char c;

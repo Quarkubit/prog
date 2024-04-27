@@ -14,7 +14,7 @@ public:
     // конструкторы
     MyArrayParent(int Dimension = 100)
     {
-        cout << "\nMyArrayParent constructor 1 ";
+        // cout << "\nMyArrayParent constructor 1 ";
         ptr = new double[Dimension];
         capacity = Dimension;
         count = 0;
@@ -23,7 +23,7 @@ public:
     // конструктор принимает существующий массив
     MyArrayParent(double *arr, int len)
     {
-        cout << "\nMyArrayParent constructor 2 ";
+        // cout << "\nMyArrayParent constructor 2 ";
         ptr = new double[len];
         capacity = len;
         count = len;
@@ -34,7 +34,7 @@ public:
     // создание копии объекта - в основном, при возвращении результата из функции / передаче параметров в функцию
     MyArrayParent(const MyArrayParent &V)
     {
-        cout << "\nMyArrayParent constructor 3 ";
+        // cout << "\nMyArrayParent constructor 3 ";
         ptr = new double[V.capacity];
         capacity = V.capacity;
         count = V.count;
@@ -65,8 +65,6 @@ public:
         else
         {
             throw std::out_of_range("Index out of range!");
-            char stop;
-            cin >> stop;
         }
         return -1;
     }
@@ -78,8 +76,6 @@ public:
         else
         {
             throw std::out_of_range("Index out of range.");
-            char stop;
-            cin >> stop;
         }
     }
 
@@ -129,6 +125,7 @@ public:
                 if (fabs(ptr[i] - value) < 0.001)
                     return i;
         }
+        return -1;
     }
 
     void print()
@@ -150,8 +147,6 @@ public:
         if (count >= capacity)
         {
             throw std::out_of_range("Array run out of memory");
-            char stop;
-            cin >> stop;
         }
         ptr[count] = value;
         count++;
@@ -163,16 +158,20 @@ public:
         if (count >= 0)
             count--;
         throw std::out_of_range("Empty");
-        char stop;
-        cin >> stop;
     }
 };
 
 class MyArrayChild : public MyArrayParent
 {
 public:
-    MyArrayChild(int Dimension = 100) : MyArrayParent(Dimension) { cout << "\nMyArrayChild constructor 1 "; }
-    MyArrayChild(double *arr, int len) : MyArrayParent(arr, len) { cout << "\nMyArrayChild constructor 2 "; }
+    MyArrayChild(int Dimension = 100) : MyArrayParent(Dimension)
+    {
+        // cout << "\nMyArrayChild constructor 1 ";
+    }
+    MyArrayChild(double *arr, int len) : MyArrayParent(arr, len)
+    {
+        // cout << "\nMyArrayChild constructor 2 ";
+    }
 
     ~MyArrayChild() { cout << "\nMyArrayChild destructor "; }
 
@@ -227,7 +226,7 @@ public:
     MyArrayChild IndexOfMax()
     {
         double maxVal = getMinMax()[1];
-        MyArrayChild resArr;
+        MyArrayChild resArr(count);
         for (int i = 0; i < count; i++)
             if (fabs(ptr[i] - maxVal) < 0.001)
                 resArr.push(i);
@@ -245,8 +244,6 @@ public:
         if (start < 0 || start >= count || end < 0 || end >= count || start > end)
         {
             throw std::out_of_range("Invalid index!");
-            char stop;
-            cin >> stop;
         }
         MyArrayChild res(end - start + 1);
         for (int i = start; i <= end; i++)
@@ -274,7 +271,7 @@ protected:
         return -1;
     }
 
-    int BinSearch2(double value, int le, int re)
+    /*int BinSearch2(double value, int le, int re)
     {
         cout << "\nMySoretedArray Bin Search Function 2 ";
         int mid = (le + re) / 2;
@@ -296,33 +293,24 @@ protected:
             return BinSearch2(value, le, mid);
         if (ptr[mid] < value)
             return BinSearch2(value, mid, re);
-    }
+        return -1;
+    }*/
 
 public:
-    MySortedArray(int Dimension = 100) : MyArrayChild(Dimension) { cout << "\nMySortedArray constructor 1 "; }
+    MySortedArray(int Dimension = 100) : MyArrayChild(Dimension)
+    {
+        // cout << "\nMySortedArray constructor 1 ";
+    }
     MySortedArray(double *arr, int len) : MyArrayChild(arr, len)
     {
-        cout << "\nMySortedArray constructor 2 ";
-        ptr = arr;
-        count = len;
+        // cout << "\nMySortedArray constructor 2 ";
+        count = 0;
         capacity = len;
 
-        // сортировка массива вставками
-        insertionSort(ptr, count);
-    }
-
-    void insertionSort(double *arr, int len)
-    {
-        for (int i = 1; i < len; i++)
+        // сортировкаа через push()
+        for (int i = 0; i < len; i++)
         {
-            double temp = arr[i];
-            int j = i - 1;
-            while (j >= 0 && arr[j] > temp)
-            {
-                arr[j + 1] = arr[j];
-                j--;
-            }
-            arr[j + 1] = temp;
+            this->push(arr[i]);
         }
     }
 
@@ -356,8 +344,13 @@ public:
                 MyArrayParent::push(value);
             return;
         }
-        int index = BinSearch2(value, 0, count - 1);
+        int index = BinSearch(value, 0, count - 1);
         InsertAt(value, index);
+    }
+    MyArrayChild &operator+=(const double value)
+    {
+        push(value);
+        return *this;
     }
 };
 
@@ -381,7 +374,7 @@ int main()
     double arr[10] = {3, 6, 9, 18, 27, 35, 48, 65, 79, 98};
     MyArrayParent d(arr, 4);
     d.print();
-    
+
     cout << "\n ";
 
     cout << '\n'
@@ -404,12 +397,15 @@ int main()
     MyArrayChild f(max, 5);
     f.IndexOfMax().print();
     cout << "\n ";
-
-    MySortedArray s(arr, 10);
-    s += 50;
+    double arr2[5] = {6, 2, 17, 1, 5};
+    MySortedArray s(arr2, 5);
+    s.print();
+    s.RemoveAt(1);
+    s.push(4);
     s.print();
 
-    char stop;
-    cin >> stop;
+    // char stop;
+    // cin >> stop;
+    cout<<"\n";
     return 0;
 }

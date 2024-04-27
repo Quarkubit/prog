@@ -59,5 +59,6 @@
         "string_view": "cpp",
         "fstream": "cpp",
         "sstream": "cpp"
-    }
+    },
+    "C_Cpp.default.compilerPath": "C:\\MinGW\\bin\\g++.exe"
 }

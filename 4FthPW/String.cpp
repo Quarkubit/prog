@@ -23,7 +23,7 @@ public:
 		len = i;
 		p = new char[len + 1];
 		char *p2 = p;
-		i = 0;
+
 		p1 = ptr;
 		while ((*p2++ = *p1++) != '\0')
 			;
