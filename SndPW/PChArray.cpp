@@ -129,7 +129,6 @@ public:
                 if (fabs(ptr[i] - value) < 0.001)
                     return i;
         }
-        return -1;
     }
 
     void print()
