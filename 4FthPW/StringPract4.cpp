@@ -6,15 +6,15 @@ using namespace std;
 class BaseString
 {
 protected:
-    char* p;
+    char *p;
     int len;
     int capacity;
 
 public:
-    BaseString(const char* ptr)
+    BaseString(const char *ptr)
     {
-        //cout << "\nBase Constructor 1\n";
-        len = strlen(ptr) + 1;//почему выдёт ошибку на strlen?
+        // cout << "\nBase Constructor 1\n";
+        len = strlen(ptr) + 1; // почему выдёт ошибку на strlen?
         capacity = 256;
         p = new char[capacity];
         for (int i = 0; i < len; i++)
@@ -26,7 +26,7 @@ public:
 
     BaseString(int Capacity = 256)
     {
-        //cout << "\nBase Constructor 0\n";
+        // cout << "\nBase Constructor 0\n";
         capacity = Capacity;
         p = new char[capacity];
         len = 0;
@@ -34,7 +34,7 @@ public:
 
     ~BaseString()
     {
-        //cout << "\nBase Destructor\n";
+        // cout << "\nBase Destructor\n";
         if (p != NULL)
             delete[] p;
         len = 0;
@@ -42,17 +42,17 @@ public:
 
     int Length() { return len; }
     int Capacity() { return capacity; }
-    char* get() { return p; }
-    char& operator[](int i) { return p[i]; }
+    char *get() { return p; }
+    char &operator[](int i) { return p[i]; }
 
-    BaseString& operator=(BaseString& s)
+    /*BaseString &operator=(BaseString &s)
     {
-        //cout << "\nBase Operator = \n";
+        // cout << "\nBase Operator = \n";
         if (capacity < s.capacity)
         {
-        	delete[] p;
-		    p = new char[s.capacity];
-		    capacity = s.capacity;
+            delete[] p;
+            p = new char[s.capacity];
+            capacity = s.capacity;
         }
         len = s.len;
         p = new char[s.capacity];
@@ -61,23 +61,23 @@ public:
         {
             p[i] = s[i];
         }
-        //strcpy(p, s.get());
         p[len - 1] = '\0';
         return *this;
-    }
+    }*/
 
-    BaseString(BaseString& s)
+    BaseString(BaseString &s)
     {
-        //cout << "\nBase Copy Constructor\n";
+        // cout << "\nBase Copy Constructor\n";
         len = s.Length();
         p = new char[s.capacity];
         capacity = s.capacity;
-        char* p1 = p; char* p2  = s.p;
-		while(*p1++=*p2++);
-		*p1 = '\0';
+        char *p1 = p;
+        char *p2 = s.p;
+        while (*p1++ = *p2++);
+        *p1 = '\0';
     }
 
-    BaseString& operator=(const BaseString& s)
+    BaseString &operator=(const BaseString &s)
     {
         if (this != &s)
         {
@@ -111,46 +111,38 @@ public:
 class String : virtual public BaseString
 {
 public:
-    String(char* ptr) : BaseString(ptr) {}
+    String(char *ptr) : BaseString(ptr) {}
 
     String(int Capacity = 256) : BaseString(Capacity) {}
 
     ~String() {}
 
-    String& operator=(String& s)
+    String &operator=(const String &s)
     {
-        //cout << "\nString Operator = \n";
-        len = s.Length();
-        p = new char[s.capacity];
-        capacity = s.capacity;
-        for (int i = 0; i < s.Length(); i++)
-        {
-            p[i] = s[i];
-        }
-        p[len - 1] = '\0';
+        BaseString::operator=(s);
         return *this;
     }
 
-    String(String& s) : BaseString(s) {}
+    String(String &s) : BaseString(s) {}
 
-    int LastIndexOf(char* substr)
+    int LastIndexOf(const char *substr) const
     {
         int substrLen = strlen(substr);
-        int strLen = Length();
+        int strLen = len;
         int lastIndex = -1;
 
-        for (int i = strLen - substrLen; i >= 0; i--)
+        for (int i = strLen - substrLen; i >= 0; --i)
         {
-            bool found = true;
-            for (int j = 0; j < substrLen; j++)
+            const char *strPtr = p + i;
+            const char *substrPtr = substr;
+
+            while (*substrPtr != '\0' && *strPtr == *substrPtr)
             {
-                if (p[i + j] != substr[j])
-                {
-                    found = false;
-                    break;
-                }
+                ++strPtr;
+                ++substrPtr;
             }
-            if (found)
+
+            if (*substrPtr == '\0')
             {
                 lastIndex = i;
                 break;
@@ -164,11 +156,13 @@ public:
 int main()
 {
     // Class BaseString
-    BaseString a1("Hello World!");
+    BaseString a1("Hello, World!");
     BaseString a2(a1);
     BaseString a3 = a2;
-    cout << a1.get() << "\n" << a2.get() << "\n" << a3.get() << endl;
-
+    cout << a1.get() << "\n"
+         << a2.get() << "\n"
+         << a3.get() << "\n"
+         << endl;
 
     // Class String
     String s1("Hello, World!");
@@ -185,6 +179,9 @@ int main()
     cout << "\ns4 operator=: ";
     s4.print();
 
-    cout<<"\n";
+    cout << "\n";
     return 0;
 }
+
+// operator= дублируется
+// искать индекс методом указателей
