@@ -76,19 +76,42 @@ public:
     IndexOutOfBoundsException(const IndexOutOfBoundsException &e) : Exception(e) {}
 };
 
+class InvalidOperationException : public Exception
+{
+public:
+    InvalidOperationException(const char *s) : Exception(s) {}
+    InvalidOperationException(const InvalidOperationException &e) : Exception(e) {}
+};
+
+class TooLargeSizeException : public WrongSizeException
+{
+public:
+    TooLargeSizeException(const char *s) : WrongSizeException(s) {}
+    TooLargeSizeException(const TooLargeSizeException &e) : WrongSizeException(e) {}
+};
+
+class NonPositiveSizeException : public WrongSizeException
+{
+public:
+    NonPositiveSizeException(const char *s) : WrongSizeException(s) {}
+    NonPositiveSizeException(const NonPositiveSizeException &e) : WrongSizeException(e) {}
+};
+
 class BaseMatrix
 {
 protected:
     double **ptr;
     int height;
     int width;
+    const int MAX_SIZE = 100;
 
 public:
     BaseMatrix(int Height = 2, int Width = 2)
     {
-        //???????????
         if (Height <= 0 || Width <= 0)
-            throw WrongSizeException("Attempt to create matrix of non-positive size");
+            throw NonPositiveSizeException("Attempt to create matrix of non-positive size");
+        if (Height > MAX_SIZE || Width > MAX_SIZE)
+            throw TooLargeSizeException("Attempt to create matrix of too large size");
         height = Height;
         width = Width;
         ptr = new double *[height];
@@ -171,17 +194,13 @@ public:
 class Matrix : public BaseMatrix
 {
 public:
-    Matrix(int Height = 2, int Width = 2) : BaseMatrix(Height, Width)
-    {
-        // cout << "\nMatrix constructor";
-    }
-    ~Matrix()
-    {
-        // cout << "\nMatrix destructor";
-    }
+    Matrix(int Height = 2, int Width = 2) : BaseMatrix(Height, Width) { cout << "\nMatrix constructor"; }
+    ~Matrix() { cout << "\nMatrix destructor"; }
 
     double Trace()
     {
+        if (getHeight() != getWidth())
+            throw InvalidOperationException("Trace operation is not defined for non-square matrix");
         double summ = 0;
         for (int i = 0; i < getHeight(); i++)
             summ += getPtr()[i][i];
@@ -191,7 +210,7 @@ public:
     Matrix operator+(Matrix M)
     {
         if (getHeight() != M.getHeight() || getWidth() != M.getWidth())
-            throw WrongSizeException("Unequal size of matrices to add in operator+()");
+            throw InvalidOperationException("Addition operation is not defined for matrices of different sizes");
         Matrix res(getHeight(), getWidth());
         for (int i = 0; i < getHeight(); i++)
             for (int j = 0; j < getWidth(); j++)
@@ -249,7 +268,6 @@ istream &operator>>(istream &s, Matrix &M)
         s >> h >> w;
         if (h != M.getHeight() || w != M.getWidth())
         {
-            //...
             M = Matrix(h, w);
         }
     }
@@ -264,53 +282,44 @@ int main()
     try
     {
         Matrix M(3, 4);
-        M(0, 0) = 0;
-        M(0, 1) = 0;
+        M(0, 0) = 1;
+        M(0, 1) = 2000;
         M(0, 2) = 30000;
-        M(0, 3) = 0;
-        M(1, 0) = 0;
-        M(1, 1) = 0;
-        M(1, 2) = 0;
-        M(1, 3) = 0;
-        M(2, 0) = 0;
-        M(2, 1) = 0;
-        M(2, 2) = 0;
-        M(2, 3) = 0;
-        cout << M << endl;
+        M(0, 3) = 4;
+        M(1, 0) = 5;
+        M(1, 1) = 667;
+        M(1, 2) = 7;
+        M(1, 3) = 8;
+        M(2, 0) = 9;
+        M(2, 1) = 15;
+        M(2, 2) = 13;
+        M(2, 3) = 12;
 
-        Matrix Matrica[10];
+        Matrix Mat[10];
         for (int i = 0; i < 10; i++)
         {
-            Matrica[i](0, 0) = i;
-            Matrica[i](0, 1) = i;
-            Matrica[i](1, 0) = i;
-            Matrica[i](1, 1) = i;
+            Mat[i](0, 0) = i;
+            Mat[i](0, 1) = i;
+            Mat[i](1, 0) = i;
+            Mat[i](1, 1) = i;
         }
-
-        cout << "3d matrix:" << "\n__________________" << endl;
-        for (int i = 0; i < 10; i++)
-        {
-            cout << Matrica[i] << endl;
-            if (i<9) cout << "_______" << endl;
-        }
-        cout << "__________________" << endl;
-
         Matrix M2(3, 3);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 M2(i, j) = i + j;
-        Matrica[5] = M2;
+        Mat[5] = M2;
 
-        ofstream fout("pract5.txt");
+        ofstream fout("1.txt");
         if (fout)
         {
+            fout << "10\n";
             for (int i = 0; i < 10; i++)
-                fout << Matrica[i] << "\n";
+                fout << Mat[i] << "\n";
             fout.close();
         }
         Matrix *M1;
         Matrix M3;
-        ifstream fin("pract5.txt");
+        ifstream fin("1.txt");
         if (fin)
         {
             int n;
@@ -337,6 +346,16 @@ int main()
              << endl;
         cout << "end of code" << endl;
     }
+    catch (NonPositiveSizeException ex)
+    {
+        cout << "\nNonPositiveSizeException has been caught\n";
+        ex.print();
+    }
+    catch (TooLargeSizeException ex)
+    {
+        cout << "\nTooLargeSizeException has been caught\n";
+        ex.print();
+    }
     catch (WrongSizeException ex)
     {
         cout << "\nWrongSizeException has been caught\n";
@@ -345,6 +364,11 @@ int main()
     catch (IndexOutOfBoundsException ex)
     {
         cout << "\nIndexOutOfBoundsException has been caught\n";
+        ex.print();
+    }
+    catch (InvalidOperationException ex)
+    {
+        cout << "\nInvalidOperationException has been caught\n";
         ex.print();
     }
     catch (Exception ex)

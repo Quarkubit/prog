@@ -2,6 +2,13 @@
 #include <vector>
 #include <cstdlib>
 
+class Allocator
+{
+public:
+    virtual void* Allocate() = 0;
+    virtual void Deallocate(void* ptr) = 0;
+};
+
 class Pool
 {
 private:
@@ -47,9 +54,24 @@ public:
     {
         return free_blocks_.size();
     }
+
+    void PrintPoolScheme()
+    {
+        std::vector<bool> occupied_blocks(num_blocks_, false);
+        for (size_t index : free_blocks_)
+        {
+            occupied_blocks[index] = true;
+        }
+
+        for (bool occupied : occupied_blocks)
+        {
+            std::cout << (occupied ? '*' : '0');
+        }
+        std::cout << std::endl;
+    }
 };
 
-class PoolAllocator
+class PoolAllocator : public Allocator
 {
 private:
     Pool *CreateNewPool()
@@ -76,7 +98,7 @@ public:
         }
     }
 
-    void *Allocate()
+    void* Allocate() override
     {
         if (current_pool_ && current_pool_->GetNumFreeBlocks() > 0)
         {
@@ -86,7 +108,7 @@ public:
         return current_pool_->Allocate();
     }
 
-    void Deallocate(void *ptr)
+    void Deallocate(void *ptr) override
     {
         if (!current_pool_)
         {
@@ -103,7 +125,7 @@ public:
 
 int main()
 {
-    PoolAllocator allocator(16, 100);
+    PoolAllocator allocator(8, 4);
 
     // Allocate and deallocate memory using the pool allocator
     int *a = (int *)allocator.Allocate();
@@ -116,7 +138,7 @@ int main()
     std::cout << "b is dealocated\n";
     std::cout << "\nend of program\n";
 
-    char c;
-    std::cin >> c;
+    // char c;
+    // std::cin >> c;
     return 0;
 }
